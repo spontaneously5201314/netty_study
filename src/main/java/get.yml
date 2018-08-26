@@ -1,0 +1,23 @@
+---
+- hosts: bj01
+  vars:
+      logfile: /home/hongfei/get.log
+      zorename: 中国北方
+  gather_facts: no
+  remote_user: root
+  tasks:
+      - uri:
+          url: http://{{ inventory_hostname }}:9007/arrow/elk?key=1
+          return_content: yes
+        register: result
+        until: result.content|int != 0
+        retries: 5
+        delay: 3
+      - shell: curl "http://{{ inventory_hostname }}:9007/arrow/elk?key=3"
+        register: roomResult
+        until: roomResult.stdout != ''
+        retries: 5
+        delay: 3
+        delegate_to: 127.0.0.1
+      - shell: echo "{{roomResult.start}}|{{inventory_hostname}}|{{result.content}}|{{zorename}}|{{roomResult.stdout}}|{{group_names[0]}}" >> {{logfile}}
+        delegate_to: 127.0.0.1

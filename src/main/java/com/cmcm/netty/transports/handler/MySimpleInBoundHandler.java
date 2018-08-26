@@ -16,6 +16,10 @@ public class MySimpleInBoundHandler extends SimpleChannelInboundHandler<String> 
     }
 
     @Override
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+
+    }
+
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         System.out.println("MySimpleInBoundHandler has receive msg : " + msg);
     }

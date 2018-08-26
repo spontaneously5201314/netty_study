@@ -4,11 +4,15 @@ import com.cmcm.netty.transports.handler.MyInBoundHandler;
 import com.cmcm.netty.transports.handler.MySimpleInBoundHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 
 import java.net.InetSocketAddress;
@@ -25,7 +29,12 @@ public class NettyNioServer {
             // 用来引导服务器配置
             ServerBootstrap b = new ServerBootstrap();
             // 使用NIO异步模式
-            b.group(group).channel(NioServerSocketChannel.class).localAddress(new InetSocketAddress(port))
+            b.group(group).channel(NioServerSocketChannel.class)
+//            b.group(group).channel(MyServerChannel.class)
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                    .option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT)
+                    .localAddress(new InetSocketAddress(port))
                     /*.handler(new ChannelHandlerAdapter() {
                         @Override
                         public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -36,6 +45,7 @@ public class NettyNioServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
                             // 添加一个“入站”handler到ChannelPipeline
                             ch.pipeline()/*.addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
@@ -44,6 +54,7 @@ public class NettyNioServer {
                                     ctx.writeAndFlush(buf.duplicate()).addListener(ChannelFutureListener.CLOSE);
                                 }
                             })*/
+                                    .addLast("logging", new LoggingHandler(LogLevel.INFO))
                                     .addLast(new MySimpleInBoundHandler(false))
                                     .addLast(new MyInBoundHandler());
                         }
