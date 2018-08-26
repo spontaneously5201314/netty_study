@@ -43,5 +43,4 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <jmh.version>1.14.1</jmh.version>
     </properties>
-
 </project>
