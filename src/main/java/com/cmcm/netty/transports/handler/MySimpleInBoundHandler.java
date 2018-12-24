@@ -15,7 +15,6 @@ public class MySimpleInBoundHandler extends SimpleChannelInboundHandler<String> 
         super(autoRelease);
     }
 
-    @Override
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
 
     }

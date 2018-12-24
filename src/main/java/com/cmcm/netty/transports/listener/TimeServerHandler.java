@@ -10,7 +10,6 @@ import io.netty.channel.ChannelHandlerContext;
  * @date 2018/9/17 19:34
  **/
 public class TimeServerHandler extends ChannelHandlerAdapter {
-    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         final ByteBuf time = ctx.alloc().buffer(4);
         time.writeInt((int) (System.currentTimeMillis() / 1000L + 2208988800L));
@@ -21,7 +20,6 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
         });
     }
 
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println(msg);
     }

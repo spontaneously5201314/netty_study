@@ -11,7 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 public class MyServerChannel extends NioServerSocketChannel {
 
     public MyServerChannel(EventLoop eventLoop, EventLoopGroup childGroup) {
-        super(eventLoop, childGroup);
+//        super(eventLoop, childGroup);
     }
 
     @Override
